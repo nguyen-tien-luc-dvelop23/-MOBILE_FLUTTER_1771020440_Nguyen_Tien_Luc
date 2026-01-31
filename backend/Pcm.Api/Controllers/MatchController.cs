@@ -22,6 +22,11 @@ namespace Pcm.Api.Controllers
             _hubContext = hubContext;
         }
 
+        // GET: api/match/ping
+        [HttpGet("ping")]
+        [AllowAnonymous]
+        public IActionResult Ping() => Ok("MatchController is alive!");
+
         // GET: api/match/{id}
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)

@@ -547,8 +547,11 @@ class ApiService {
     if (token == null) return 'Not authenticated';
 
     try {
+      final uri = Uri.parse('$baseUrl/match/challenge');
+      print('⚔️ Calling Create Challenge: $uri');
+      
       final response = await http.post(
-        Uri.parse('$baseUrl/Match/challenge'),
+        uri,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -576,7 +579,7 @@ class ApiService {
 
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/Match/challenges'),
+        Uri.parse('$baseUrl/match/challenges'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -597,7 +600,7 @@ class ApiService {
     if (token == null) return 'Not authenticated';
 
     final response = await http.post(
-      Uri.parse('$baseUrl/Match/$matchId/accept'),
+      Uri.parse('$baseUrl/match/$matchId/accept'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
