@@ -125,10 +125,10 @@ namespace Pcm.Api.Controllers
                 new Claim("fullName", member.FullName)
             };
 
-            if (member.Email == "luc@gmail.com" || member.Email.ToLower().Contains("admin"))
+            if (member.IsAdmin)
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-                claims.Add(new Claim("role", "Admin")); // Explicit literal claim for some clients
+                claims.Add(new Claim("role", "Admin"));
             }
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

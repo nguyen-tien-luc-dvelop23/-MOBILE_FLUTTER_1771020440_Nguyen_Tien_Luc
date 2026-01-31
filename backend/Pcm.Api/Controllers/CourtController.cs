@@ -6,7 +6,7 @@ using Pcm.Domain.Entities;
 namespace Pcm.Api.Controllers
 {
     [ApiController]
-    [Route("api/court")]
+    [Route("api/[controller]")]
     [Authorize]
     public class CourtController : ControllerBase
     {

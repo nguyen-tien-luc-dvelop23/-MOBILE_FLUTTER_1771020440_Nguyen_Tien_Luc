@@ -155,7 +155,7 @@ class ApiService {
       },
       body: jsonEncode({
         'name': name,
-        'description': location, // Backend uses 'description' not 'location'
+        'description': location, 
         'pricePerHour': pricePerHour,
         'isActive': true,
       }),
@@ -163,9 +163,9 @@ class ApiService {
 
     print('🏟️ Create court response: ${response.statusCode}');
     if (response.statusCode == 403) {
-      print('❌ Permission Denied (403). ACTION: Logout and Login again to refresh Admin token.');
+      print('❌ ERROR 403: Permission Denied. User is NOT an Admin.');
     } else if (response.statusCode == 405) {
-      print('❌ Method Not Allowed (405). Check if route/verb is correct.');
+      print('❌ ERROR 405: Method Not Allowed. Route: $baseUrl/court');
     } else if (response.statusCode != 200 && response.statusCode != 201) {
       print('❌ Create court failed: ${response.body}');
     }
@@ -581,8 +581,8 @@ class ApiService {
         return null; // Success
       } else {
         print('❌ Create Challenge Failed: ${response.statusCode} - ${response.body}');
-        if (response.statusCode == 405) return 'Error 405: Method Not Allowed. Redirect issue or route mismatch.';
-        if (response.statusCode == 403) return 'Error 403: Permission Denied. Please logout and login again.';
+        if (response.statusCode == 405) return 'Error 405: Method Not Allowed. URL: $uri';
+        if (response.statusCode == 403) return 'Error 403: Permission Denied (Forbidden).';
         return 'Failed: ${response.statusCode} ${response.body}';
       }
     } catch (e) {

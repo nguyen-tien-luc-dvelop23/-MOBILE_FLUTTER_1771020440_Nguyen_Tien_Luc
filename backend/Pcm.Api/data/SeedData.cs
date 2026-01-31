@@ -39,12 +39,20 @@ public static class SeedData
             {
                 Email = memberAdminEmail,
                 Password = memberAdminPassword,
-                FullName = "LUC (ADMIN)",
+                FullName = "Nguyễn Tiến Lực", // Updated name again for consistency
                 IsActive = true,
+                IsAdmin = true, // Force admin
                 WalletBalance = 5000000,
                 TotalSpent = 0,
                 Tier = Tier.Diamond
             });
+            await db.SaveChangesAsync();
+        }
+        else 
+        {
+            // Always ensure luc@gmail.com is admin and has correct name
+            member.FullName = "Nguyễn Tiến Lực";
+            member.IsAdmin = true;
             await db.SaveChangesAsync();
         }
     }

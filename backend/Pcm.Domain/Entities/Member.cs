@@ -24,5 +24,6 @@ namespace Pcm.Domain.Entities
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public string? AvatarUrl { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }
