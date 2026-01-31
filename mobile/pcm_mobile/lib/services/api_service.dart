@@ -162,7 +162,11 @@ class ApiService {
     );
 
     print('🏟️ Create court response: ${response.statusCode}');
-    if (response.statusCode != 200 && response.statusCode != 201) {
+    if (response.statusCode == 403) {
+      print('❌ Permission Denied (403). ACTION: Logout and Login again to refresh Admin token.');
+    } else if (response.statusCode == 405) {
+      print('❌ Method Not Allowed (405). Check if route/verb is correct.');
+    } else if (response.statusCode != 200 && response.statusCode != 201) {
       print('❌ Create court failed: ${response.body}');
     }
 
@@ -577,6 +581,8 @@ class ApiService {
         return null; // Success
       } else {
         print('❌ Create Challenge Failed: ${response.statusCode} - ${response.body}');
+        if (response.statusCode == 405) return 'Error 405: Method Not Allowed. Redirect issue or route mismatch.';
+        if (response.statusCode == 403) return 'Error 403: Permission Denied. Please logout and login again.';
         return 'Failed: ${response.statusCode} ${response.body}';
       }
     } catch (e) {

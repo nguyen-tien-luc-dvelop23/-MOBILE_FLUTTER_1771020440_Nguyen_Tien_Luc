@@ -132,10 +132,10 @@ using (var scope = app.Services.CreateScope())
 
 // Flutter Web/Chrome thường gọi qua http://localhost:<port>
 // Nếu bật redirect HTTPS mà không có https endpoint => client sẽ lỗi "connection refused".
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+// if (!app.Environment.IsDevelopment())
+// {
+//     app.UseHttpsRedirection();
+// }
 
 app.UseCors("AllowAll");
 
