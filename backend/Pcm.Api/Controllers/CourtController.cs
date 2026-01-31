@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Pcm.Infrastructure.Data;
 using Pcm.Domain.Entities;
@@ -6,7 +7,7 @@ using Pcm.Domain.Entities;
 namespace Pcm.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/court")]
     [Authorize]
     public class CourtController : ControllerBase
     {

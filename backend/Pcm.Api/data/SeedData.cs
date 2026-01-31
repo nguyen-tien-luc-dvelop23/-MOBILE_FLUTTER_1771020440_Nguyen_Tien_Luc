@@ -32,14 +32,14 @@ public static class SeedData
         var memberAdminEmail = "luc@gmail.com";
         var memberAdminPassword = "123456";
 
-        var memberExists = await db.Members.AnyAsync(m => m.Email == memberAdminEmail);
-        if (!memberExists)
+        var memberAdmin = await db.Members.FirstOrDefaultAsync(m => m.Email == memberAdminEmail);
+        if (memberAdmin == null)
         {
             db.Members.Add(new Member
             {
                 Email = memberAdminEmail,
                 Password = memberAdminPassword,
-                FullName = "Nguyễn Tiến Lực", // Updated name again for consistency
+                FullName = "Nguyễn Tiến Lực", 
                 IsActive = true,
                 IsAdmin = true, // Force admin
                 WalletBalance = 5000000,
@@ -51,8 +51,8 @@ public static class SeedData
         else 
         {
             // Always ensure luc@gmail.com is admin and has correct name
-            member.FullName = "Nguyễn Tiến Lực";
-            member.IsAdmin = true;
+            memberAdmin.FullName = "Nguyễn Tiến Lực";
+            memberAdmin.IsAdmin = true;
             await db.SaveChangesAsync();
         }
     }
