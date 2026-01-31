@@ -30,7 +30,8 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
 
   Future<void> _showCourtDialog({Map<String, dynamic>? court}) async {
     final nameCtrl = TextEditingController(text: court?['name'] ?? '');
-    final locationCtrl = TextEditingController(text: court?['location'] ?? '');
+    // Supports both 'location' (old/UI) and 'description' (backend)
+    final locationCtrl = TextEditingController(text: (court?['description'] ?? court?['location']) ?? '');
     final priceCtrl = TextEditingController(
       text: court != null ? court['pricePerHour'].toString() : '',
     );
@@ -54,7 +55,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
               TextField(
                 controller: locationCtrl,
                 decoration: const InputDecoration(
-                  labelText: 'Vị trí',
+                  labelText: 'Mô tả / Vị trí',
                   prefixIcon: Icon(Icons.location_on),
                 ),
               ),
@@ -79,7 +80,8 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
             onPressed: () async {
               final name = nameCtrl.text.trim();
               final location = locationCtrl.text.trim();
-              final price = double.tryParse(priceCtrl.text);
+              final priceString = priceCtrl.text.trim().replaceAll(',', '');
+              final price = double.tryParse(priceString);
 
               if (name.isEmpty || location.isEmpty || price == null || price <= 0) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +107,16 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
               }
 
               if (!context.mounted) return;
-              Navigator.pop(context, success);
+              if (success) {
+                Navigator.pop(context, true);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                   const SnackBar(
+                    content: Text('Lỗi kết nối hoặc phân quyền. Vui lòng thử lại.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             child: Text(court == null ? 'Thêm' : 'Cập nhật'),
           ),
@@ -233,7 +244,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                               children: [
                                 const Icon(Icons.location_on, size: 16, color: Colors.grey),
                                 const SizedBox(width: 4),
-                                Text(court['location'] ?? 'Chưa có vị trí'),
+                                Text((court['description'] ?? court['location']) ?? 'Chưa có vị trí'),
                               ],
                             ),
                             const SizedBox(height: 4),

@@ -126,6 +126,18 @@ public static class DbSeeder
                 context.Tournaments.Add(t);
             }
         }
+
+        // --- SEED COURTS ---
+        if (!context.Courts.Any())
+        {
+            context.Courts.AddRange(new List<Court>
+            {
+                new Court { Name = "Sân A", Description = "Sân trong nhà - Tiêu chuẩn", PricePerHour = 150000, IsActive = true },
+                new Court { Name = "Sân B", Description = "Sân trong nhà - View đẹp", PricePerHour = 150000, IsActive = true },
+                new Court { Name = "Sân C", Description = "Sân ngoài trời - Thoáng mát", PricePerHour = 120000, IsActive = true },
+                new Court { Name = "Sân D", Description = "Sân ngoài trời - Tiết kiệm", PricePerHour = 100000, IsActive = true },
+            });
+        }
         
         await context.SaveChangesAsync();
     }

@@ -139,21 +139,29 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                DropdownButtonFormField<int>(
-                  value: _selectedCourtId,
-                  decoration: const InputDecoration(labelText: 'Sân'),
-                  items: _courts
-                      .map(
-                        (c) => DropdownMenuItem<int>(
-                          value: c['id'] as int,
-                          child: Text(
-                            c['name']?.toString() ?? 'Sân ${c['id']}',
-                          ),
+                _courts.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'Chưa có dữ liệu sân. Vui lòng thêm sân trong phần Quản lý sân (Admin).',
+                          style: TextStyle(color: Colors.red, fontSize: 13),
                         ),
                       )
-                      .toList(),
-                  onChanged: (v) => setState(() => _selectedCourtId = v),
-                ),
+                    : DropdownButtonFormField<int>(
+                        value: _selectedCourtId,
+                        decoration: const InputDecoration(labelText: 'Sân'),
+                        items: _courts
+                            .map(
+                              (c) => DropdownMenuItem<int>(
+                                value: c['id'] as int,
+                                child: Text(
+                                  c['name']?.toString() ?? 'Sân ${c['id']}',
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) => setState(() => _selectedCourtId = v),
+                      ),
                 const SizedBox(height: 12),
                 _buildSlots(context),
                 const SizedBox(height: 10),
