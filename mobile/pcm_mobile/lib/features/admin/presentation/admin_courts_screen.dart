@@ -245,7 +245,13 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                               children: [
                                 const Icon(Icons.location_on, size: 16, color: Colors.grey),
                                 const SizedBox(width: 4),
-                                Text((court['description'] ?? court['location']) ?? 'Chưa có vị trí'),
+                                Expanded(
+                                  child: Text(
+                                    (court['description'] ?? court['location']) ?? 'Chưa có vị trí',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -253,11 +259,15 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                               children: [
                                 const Icon(Icons.attach_money, size: 16, color: Colors.grey),
                                 const SizedBox(width: 4),
-                                Text(
-                                  '${court['pricePerHour']} VNĐ/giờ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: colorScheme.primary,
+                                Expanded(
+                                  child: Text(
+                                    '${court['pricePerHour']} VNĐ/giờ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: colorScheme.primary,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],
