@@ -124,10 +124,14 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Migration failed: {ex.Message}");
     }
 
-    await SeedData.SeedUserAsync(scope.ServiceProvider);
-    
-    // Auto seed tournaments/courts
-    await DbSeeder.SeedAsync(context);
+    try {
+        await SeedData.SeedUserAsync(scope.ServiceProvider);
+        
+        // Auto seed tournaments/courts
+        await DbSeeder.SeedAsync(context);
+    } catch (Exception ex) {
+        Console.WriteLine($"Seeding failed: {ex.Message}");
+    }
 }
 
 // Flutter Web/Chrome thường gọi qua http://localhost:<port>
@@ -143,8 +147,11 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Minimal API Ping - Always Works
+app.MapGet("/ping", () => "pong");
+
 app.MapControllers();
-app.MapGet("/api/version", () => new { Version = "1.0.20", LastUpdated = DateTime.Now.ToString() });
+app.MapGet("/api/version", () => new { Version = "1.0.22", LastUpdated = DateTime.Now.ToString(), Status = "Active" });
 app.MapHub<Pcm.Api.Hubs.PcmHub>("/pcmHub");
 
 app.Run();

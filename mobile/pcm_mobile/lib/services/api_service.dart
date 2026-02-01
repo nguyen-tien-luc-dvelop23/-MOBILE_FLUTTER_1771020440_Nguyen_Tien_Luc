@@ -686,11 +686,18 @@ class ApiService {
   // ===== DIAGNOSTICS =====
   static Future<Map<String, dynamic>> checkServerStatus() async {
     try {
+      // 1. Try Ping first (Sanity Check)
+      final ping = await http.get(Uri.parse('$baseUrl/../ping')); // Go up one level from /api/ to root
+      
       final response = await http.get(Uri.parse('$baseUrl/diagnostics'));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        return {'error': 'Failed to connect: ${response.statusCode}'};
+        return {
+          'error': 'Failed to connect: ${response.statusCode}',
+          'ping_status': ping.statusCode,
+          'ping_body': ping.body
+        };
       }
     } catch (e) {
       return {'error': 'Connection error: $e'};
