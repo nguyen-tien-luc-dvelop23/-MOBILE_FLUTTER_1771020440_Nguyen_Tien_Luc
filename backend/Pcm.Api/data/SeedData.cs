@@ -54,6 +54,7 @@ public static class SeedData
             memberAdmin.FullName = "Nguyễn Tiến Lực";
             memberAdmin.IsAdmin = true;
             await db.SaveChangesAsync();
+            Console.WriteLine($"[SEEDER] FORCED ADMIN for {memberAdminEmail}");
         }
     }
 }
