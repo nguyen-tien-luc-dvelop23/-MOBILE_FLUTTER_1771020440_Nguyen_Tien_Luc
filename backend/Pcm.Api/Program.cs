@@ -110,26 +110,34 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-using (var scope = app.Services.CreateScope())
+try 
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
-    // Ensure database is up to date (Migration)
-    // This is critical for Render deployments where schema might lag behind code.
-    try {
-        await context.Database.MigrateAsync();
-    } catch (Exception ex) {
-        Console.WriteLine($"Migration failed: {ex.Message}");
-    }
+    using (var scope = app.Services.CreateScope())
+    {
+        try {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            // Ensure database is up to date (Migration)
+            try {
+                await context.Database.MigrateAsync();
+            } catch (Exception ex) {
+                Console.WriteLine($"Migration failed: {ex.Message}");
+            }
 
-    try {
-        await SeedData.SeedUserAsync(scope.ServiceProvider);
-        
-        // Auto seed tournaments/courts
-        await DbSeeder.SeedAsync(context);
-    } catch (Exception ex) {
-        Console.WriteLine($"Seeding failed: {ex.Message}");
+            try {
+                await SeedData.SeedUserAsync(scope.ServiceProvider);
+                await DbSeeder.SeedAsync(context);
+            } catch (Exception ex) {
+                Console.WriteLine($"Seeding failed: {ex.Message}");
+            }
+        } catch (Exception ex) {
+            Console.WriteLine($"Critical Error in DbContext initialization: {ex.Message}");
+        }
     }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Fatal Startup Error: {ex.Message}");
 }
 
 // Flutter Web/Chrome thường gọi qua http://localhost:<port>
@@ -153,7 +161,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Minimal API Ping - Always Works
-app.MapGet("/api/version", () => new { Version = "1.0.25", LastUpdated = DateTime.Now.ToString(), Status = "Active" });
+app.MapGet("/api/version", () => new { Version = "1.0.26", LastUpdated = DateTime.Now.ToString(), Status = "Active" });
 app.MapHub<Pcm.Api.Hubs.PcmHub>("/pcmHub");
 
 app.Run();
