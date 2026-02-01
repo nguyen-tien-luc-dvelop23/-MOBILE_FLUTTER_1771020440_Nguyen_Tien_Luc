@@ -25,13 +25,32 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // DbContext - MySQL
+// DbContext - Robust Setup
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 31))
-    );
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // Fallback if no connection string (e.g. Render Env Var missing)
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        Console.WriteLine("⚠️ WARNING: No ConnectionString found. Using In-Memory Database for Diagnostics.");
+        options.UseInMemoryDatabase("PcmFallbackDb");
+    }
+    else
+    {
+        try 
+        {
+            options.UseMySql(
+                connectionString,
+                        new MySqlServerVersion(new Version(8, 0, 31))
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ ERROR: Failed to configure MySQL: {ex.Message}. Fallback to In-Memory.");
+            options.UseInMemoryDatabase("PcmFallbackDb");
+        }
+    }
 });
 
 // Identity
@@ -150,7 +169,7 @@ app.UseAuthorization();
 app.MapGet("/ping", () => "pong");
 
 app.MapControllers();
-app.MapGet("/api/version", () => new { Version = "1.0.23", LastUpdated = DateTime.Now.ToString(), Status = "Active" });
+app.MapGet("/api/version", () => new { Version = "1.0.24", LastUpdated = DateTime.Now.ToString(), Status = "Active (SafetyNet)" });
 app.MapHub<Pcm.Api.Hubs.PcmHub>("/pcmHub");
 
 app.Run();
