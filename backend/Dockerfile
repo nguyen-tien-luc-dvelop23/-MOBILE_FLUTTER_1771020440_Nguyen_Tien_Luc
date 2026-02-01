@@ -24,9 +24,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Expose Port (Render uses PORT env var, but this documents intent)
+# Expose Ports (Listen on both 8080 and 10000 to match Render's expectations)
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 10000
+ENV ASPNETCORE_URLS=http://+:8080;http://+:10000
 
 # Entrypoint
 ENTRYPOINT ["dotnet", "Pcm.Api.dll"]
