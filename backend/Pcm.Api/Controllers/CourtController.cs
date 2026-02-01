@@ -34,9 +34,15 @@ namespace Pcm.Api.Controllers
 
         // POST: api/court
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] Court court)
         {
+            var member = await GetCurrentMember();
+            if (member == null || !member.IsAdmin) 
+            {
+                Console.WriteLine($"[AUTH_DEBUG] Access Denied for {member?.Email}. IsAdmin={member?.IsAdmin}");
+                return Forbid();
+            }
+
             if (court == null)
                 return BadRequest("Court data is required");
 
@@ -48,9 +54,11 @@ namespace Pcm.Api.Controllers
 
         // PUT: api/court/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] Court court)
         {
+            var member = await GetCurrentMember();
+            if (member == null || !member.IsAdmin) return Forbid();
+
             var existing = await _context.Courts.FindAsync(id);
             if (existing == null)
                 return NotFound();
@@ -65,9 +73,11 @@ namespace Pcm.Api.Controllers
 
         // DELETE: api/court/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
+            var member = await GetCurrentMember();
+            if (member == null || !member.IsAdmin) return Forbid();
+
             var court = await _context.Courts.FindAsync(id);
             if (court == null)
                 return NotFound();
@@ -76,6 +86,17 @@ namespace Pcm.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private async Task<Member?> GetCurrentMember()
+        {
+            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                            ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int memberId)) 
+                return null;
+
+            return await _context.Members.FindAsync(memberId);
         }
     }
 }

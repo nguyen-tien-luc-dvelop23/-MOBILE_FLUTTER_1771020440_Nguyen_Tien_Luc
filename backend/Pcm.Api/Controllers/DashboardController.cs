@@ -6,8 +6,8 @@ using Pcm.Infrastructure.Data;
 namespace Pcm.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize] // Should be [Authorize(Roles = "Admin")]
+    [Route("api/dashboard")]
+    [Authorize]
     public class DashboardController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -20,6 +20,9 @@ namespace Pcm.Api.Controllers
         [HttpGet("admin/stats")]
         public async Task<IActionResult> GetAdminStats()
         {
+            var admin = await GetCurrentMember();
+            if (admin == null || !admin.IsAdmin) return Forbid();
+
             // Doanh thu (Nạp/Chi) theo tháng hiện tại
             var now = DateTime.Now;
             var startOfMonth = new DateTime(now.Year, now.Month, 1);
@@ -27,7 +30,7 @@ namespace Pcm.Api.Controllers
 
             // Tổng booking trong tháng
             var bookingCount = await _context.Bookings
-                .Where(b => b.CreatedDate >= startOfMonth && b.CreatedDate < endOfMonth) // Note: Booking entity uses CreatedAt or similar? Need to check.
+                .Where(b => b.CreatedDate >= startOfMonth && b.CreatedDate < endOfMonth)
                 .CountAsync();
 
             // Tổng nạp tiền (Deposit)
@@ -54,9 +57,20 @@ namespace Pcm.Api.Controllers
                 Year = now.Year,
                 BookingCount = bookingCount,
                 TotalDeposit = totalDeposit,
-                TotalSpent = Math.Abs(totalSpent), // convert to positive for display
+                TotalSpent = Math.Abs(totalSpent),
                 DailyRevenue = dailyRevenue
             });
+        }
+
+        private async Task<Pcm.Domain.Entities.Member?> GetCurrentMember()
+        {
+            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                            ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int memberId)) 
+                return null;
+
+            return await _context.Members.FindAsync(memberId);
         }
     }
 }

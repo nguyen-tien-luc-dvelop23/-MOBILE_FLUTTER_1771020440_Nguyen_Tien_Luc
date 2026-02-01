@@ -61,7 +61,8 @@ namespace Pcm.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTournamentRequest request)
         {
-            // TODO: check admin role if needed
+            var admin = await GetCurrentMember();
+            if (admin == null || !admin.IsAdmin) return Forbid();
 
             var tournament = new Tournament
             {
@@ -84,6 +85,9 @@ namespace Pcm.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] CreateTournamentRequest request)
         {
+            var admin = await GetCurrentMember();
+            if (admin == null || !admin.IsAdmin) return Forbid();
+
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)
                 return NotFound();
@@ -104,6 +108,9 @@ namespace Pcm.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var admin = await GetCurrentMember();
+            if (admin == null || !admin.IsAdmin) return Forbid();
+
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)
                 return NotFound();
@@ -112,6 +119,17 @@ namespace Pcm.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private async Task<Member?> GetCurrentMember()
+        {
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                            ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int memberId)) 
+                return null;
+
+            return await _context.Members.FindAsync(memberId);
         }
 
         // POST: api/tournament/{id}/join

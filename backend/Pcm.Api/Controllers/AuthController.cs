@@ -107,7 +107,8 @@ namespace Pcm.Api.Controllers
                 member.Email,
                 member.AvatarUrl,
                 member.Tier,
-                WalletBalance = walletBalance
+                WalletBalance = walletBalance,
+                IsAdmin = member.IsAdmin
             });
         }
 

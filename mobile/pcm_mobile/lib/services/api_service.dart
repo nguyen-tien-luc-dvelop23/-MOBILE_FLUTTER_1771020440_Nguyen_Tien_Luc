@@ -562,7 +562,7 @@ class ApiService {
     if (token == null) return 'Not authenticated';
 
     try {
-      final uri = Uri.parse('$baseUrl/match/challenge');
+      final uri = Uri.parse('$baseUrl/match/create-challenge');
       print('⚔️ Calling Create Challenge: $uri');
       
       final response = await http.post(

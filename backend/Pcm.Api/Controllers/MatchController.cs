@@ -40,8 +40,8 @@ namespace Pcm.Api.Controllers
             return Ok(match);
         }
 
-        // POST: api/match/challenge
-        [HttpPost("challenge")]
+        // POST: api/match/create-challenge
+        [HttpPost("create-challenge")]
         public async Task<IActionResult> CreateChallenge([FromBody] CreateChallengeRequest request)
         {
             var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
