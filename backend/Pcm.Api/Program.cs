@@ -144,6 +144,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/api/version", () => new { Version = "1.0.20", LastUpdated = DateTime.Now.ToString() });
 app.MapHub<Pcm.Api.Hubs.PcmHub>("/pcmHub");
 
 app.Run();

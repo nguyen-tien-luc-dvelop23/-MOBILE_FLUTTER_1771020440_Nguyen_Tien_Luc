@@ -7,6 +7,7 @@ namespace Pcm.Api.Controllers
 {
     [ApiController]
     [Route("api/diagnostics")]
+    [AllowAnonymous]
     public class DiagnosticsController : ControllerBase
     {
         private readonly AppDbContext _context;
