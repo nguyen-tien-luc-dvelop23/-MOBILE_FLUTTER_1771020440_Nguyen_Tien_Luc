@@ -148,7 +148,7 @@ class ApiService {
     print('🏟️ Creating court: $name at $location, price: $pricePerHour');
 
     final response = await http.post(
-      Uri.parse('$baseUrl/court'),
+      Uri.parse('$baseUrl/court/create'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

@@ -32,8 +32,8 @@ namespace Pcm.Api.Controllers
             return Ok(courts);
         }
 
-        // POST: api/court
-        [HttpPost]
+        // POST: api/court/create
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] Court court)
         {
             var member = await GetCurrentMember();
