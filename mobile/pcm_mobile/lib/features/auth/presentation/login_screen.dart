@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../services/api_service.dart';
+import '../../admin/presentation/server_status_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -190,6 +191,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 12,
                               ),
                             ),
+                          ),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: TextButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(builder: (_) => const ServerStatusScreen()),
+                                );
+                              },
+                              icon: const Icon(Icons.dns_outlined, size: 16),
+                              label: const Text('Check Server Status (Debug)'),
+                            ), 
                           ),
                         ],
                       ),

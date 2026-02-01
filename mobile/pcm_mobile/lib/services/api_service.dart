@@ -683,4 +683,17 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
+  // ===== DIAGNOSTICS =====
+  static Future<Map<String, dynamic>> checkServerStatus() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/diagnostics'));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return {'error': 'Failed to connect: ${response.statusCode}'};
+      }
+    } catch (e) {
+      return {'error': 'Connection error: $e'};
+    }
+  }
 }
