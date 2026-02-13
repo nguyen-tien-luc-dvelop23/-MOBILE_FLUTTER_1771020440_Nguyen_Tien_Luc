@@ -23,7 +23,7 @@ PCM Mobile là giải pháp toàn diện cho việc quản lý và đặt sân P
 |----------|------|-------|
 | **🌐 Web Version** | [**Chơi ngay (GitHub Pages)**](https://nguyen-tien-luc-dvelop23.github.io/test1/) | Chạy trực tiếp trên trình duyệt, không cần cài đặt. |
 | **🤖 Android APK** | [**Tải xuống (v2.0)**](https://github.com/nguyen-tien-luc-dvelop23/test1/releases/tag/v2.0) | File cài đặt cho điện thoại Android. |
-| **📡 API Server** | [Check Status](https://test1-wxri.onrender.com/api/version) | Backend Server  |
+| **📡 API Server** | | Backend Server  |
 
 ---
 
